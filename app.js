@@ -25,7 +25,7 @@ console.log(pokemon.find(p => p.number === 59).name);
 
 // Exercise 2
 
-// console.log(game);
+console.log(game);
 
 
 /*
@@ -52,6 +52,12 @@ Solve Exercise 4 here:
 const firstPokemonNum = 25;
 // array method: unshift()
 game.party.unshift(pokemon.find(p => p.number === firstPokemonNum));
+
+// or if you wanted the first one with starter: true
+// const firstPokemon = pokemon.find(p => p.starter === 'true');
+// game.party.unshift(firstPokemon);
+
+
 
 
 /*
@@ -98,9 +104,8 @@ Exercise 6
 Solve Exercise 6 here:
 */
 
-// ok apparently this is a big chunk of the exercises
-// so now it's a function
-// ! completeGyms(n): sets game.gyms 'completed' values to true for gym difficulties strictly less than n
+// returning from Ex. 15: ok apparently this is a big chunk of the exercises. so now it's a function
+// completeGyms(n): sets game.gyms 'completed' values to true for gym difficulties strictly less than n
 function completeGyms(n) {
     for (gym of game.gyms) {
         if (gym.difficulty < n) {
@@ -295,8 +300,8 @@ Exercise 15
 Solve Exercise 15 here:
 */
 
-// the only reflection I can offer is that this is exercise at which I went back and refactored my code to make this code block a function. Hopefuly this pays off.
-
+// the only reflection I can offer is that this is the exercise at which I went back and refactored my code to make this code block a function. Hopefuly this pays off.
+// either that or "I changed a 6 to an 8" lol
 completeGyms(8);
 
 
@@ -308,6 +313,7 @@ Exercise 16
 Solve Exercise 16 here:
 */
 
+// easy
 console.log(game);
 
 
@@ -331,7 +337,7 @@ function hpCompare(a, b) {
     // a must be equal to b
     return 0;
 };
-// somehow this sorts the hp in console.log calls at the top of the file. I do not understand.
+// somehow this sorts the hp in console.log calls at the top of the file. Ben says is ok.
 game.party.sort(hpCompare);
 console.log(game.party);
 
@@ -368,6 +374,7 @@ game.catchPokemon = function(pokemonObj) {
     };
 };
 game.catchPokemon(pokemon[12]); // I just chose a random number here
+// logging just the pokeballs, not all items, for console.log readability
 console.log(game.items[1]);
 
 
@@ -413,6 +420,39 @@ If there is not a match, then return a string noting that the selected Pokemon d
 Solve Exercise 20 here:
 */
 
+game.catchPokemon = function(pokemonName) {
+    // name parsing
+    let pName = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1).toLowerCase();
+    // try and find in the database
+    let foundPokemon = pokemon.find(p => p.name === pName);
+    if (foundPokemon === undefined) { // if not found
+        console.log(`${pName} not found.`); // I know the exercise says "return" but everything else is console.log sooooo
+    } else { // if found
+        // let's frontload all our variables
+        let inParty = game.party.includes(foundPokemon);
+        let inCollection = game.collection.includes(foundPokemon);
+        let hasRoom = game.party.length < 6;
+        let hasBalls = game.items[1].quantity > 0;
+        // same logic as before, just with variable names now
+        if (hasBalls) {
+            if (!inParty && hasRoom) {
+                game.party.push(foundPokemon);
+                game.items[1].quantity -=1;
+                console.log(`${pName} added to the party!`); // added indication of success
+            } else if (!inParty && !inCollection) {
+                game.collection.push(foundPokemon);
+                game.items[1].quantity -= 1;
+                console.log(`${pName} added to the collection!`); // added indication of success
+            } else {
+                console.log(`You already have ${foundPokemon.name}`)
+            };
+        } else {
+            console.log("You're out of pokeballs!");
+        };
+    };
+};
+game.catchPokemon('cHaRriZaRd'); // nope
+game.catchPokemon('cHaRiZaRd'); // yup
 
 
 /*
@@ -442,4 +482,22 @@ Solve Exercise 21 here:
 */
 
 
+// trying to loop only once
+objectOfPokemon = {};
 
+for (p of pokemon) {
+    let pType = p.type;
+    if (!(objectOfPokemon.hasOwnProperty(pType))) { // if objectOfPokemon doesn't have this type of pokemon yet
+        objectOfPokemon[pType] = [p]; // create a new array containing just this pokemon, assign it to a new key that is this pokemon's type, e.g. 'grass'
+    } else { // add it to its friends!
+        objectOfPokemon[pType].push(p);
+    };
+};
+console.log(objectOfPokemon);
+
+// check that they all made it in
+let sum = 0;
+for (x in objectOfPokemon) {
+    sum += objectOfPokemon[x].length;
+};
+console.log(`our new object has ${sum} pokemon. -> ${sum === pokemon.length}`);
