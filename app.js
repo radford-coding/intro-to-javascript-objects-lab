@@ -19,9 +19,13 @@ const game = {
 
 // Exercise 1
 
-console.dir(pokemon, { maxArrayLength: null })
+// console.dir(pokemon, { maxArrayLength: null })
+// use find() with p as the individual pokemon - can't use pokemon here since it's its own plural, and thus the name of our data object
+console.log(pokemon.find(p => p.number === 59).name);
 
 // Exercise 2
+
+// console.log(game);
 
 
 /*
@@ -33,7 +37,7 @@ Exercise 3
 Solve Exercise 3 here:
 */
 
-
+game.difficulty = 'Med';
 
 /*
 Exercise 4
@@ -43,6 +47,11 @@ Exercise 4
 
 Solve Exercise 4 here:
 */
+
+// pick a starter pokemon from the given numbers
+const firstPokemonNum = 25;
+// array method: unshift()
+game.party.unshift(pokemon.find(p => p.number === firstPokemonNum));
 
 
 /*
@@ -54,6 +63,29 @@ Exercise 5
 Solve Exercise 5 here:
 */
 
+// get a pokemon with the most health,
+let currentBeefiestPokemon = {
+    hp: 0,
+};
+// a pokemon with the least health,
+let currentSquishiestPokemon = {
+    hp: 1000,
+};
+// and a pokemon of type psychic
+let currentPsychicPokemon = {};
+// go find em
+for (p of pokemon) {
+    if (p.hp > currentBeefiestPokemon.hp) {
+        currentBeefiestPokemon = p;
+    };
+    if (p.hp < currentSquishiestPokemon.hp) {
+        currentSquishiestPokemon = p;
+    };
+    if (p.type === 'psychic') { // this is inefficient perhaps?
+        currentPsychicPokemon = p;
+    };
+};
+game.party.push(currentBeefiestPokemon, currentSquishiestPokemon, currentPsychicPokemon);
 
 
 /*
@@ -65,6 +97,13 @@ Exercise 6
 Solve Exercise 6 here:
 */
 
+for (gym of game.gyms) {
+    if (gym.difficulty < 3) {
+        gym.completed = true;
+    } else { // we can save some computations here since we know that the gyms are sorted by increasing difficulty
+        break;
+    };
+};
 
 
 /*
@@ -84,7 +123,14 @@ More Hints: The existing starter Pokemon will be *replaced* in your party with t
 Solve Exercise 7 here:
 */
 
+// most straightforward way, metagaming
+// game.party[0] = pokemon[25];
 
+// with fewer assumptions about order
+let pikachuIndex = game.party.indexOf(game.party.find(p => p.name === 'Pikachu'));
+let raichuIndex = pokemon.indexOf(pokemon.find(p => p.name === 'Raichu'));
+game.party[pikachuIndex] = pokemon[raichuIndex];
+// console.log(game);
 
 /*
 Exercise 8
@@ -94,7 +140,9 @@ Exercise 8
 Solve Exercise 8 here:
 */
 
-
+for (p of game.party) {
+    console.log(p.name);
+};
 
 /*
 Exercise 9
@@ -105,6 +153,11 @@ Exercise 9
 Solve Exercise 9 here:
 */
 
+for (p of pokemon) {
+    if (p.starter) { // since starter is t/f
+        console.log(p); // prompt asked for the whole pokemon, not just their names
+    };
+};
 
 /*
 Exercise 10
