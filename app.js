@@ -87,6 +87,7 @@ for (p of pokemon) {
 };
 game.party.push(currentBeefiestPokemon, currentSquishiestPokemon, currentPsychicPokemon);
 
+console.log(game);
 
 /*
 Exercise 6
@@ -97,13 +98,20 @@ Exercise 6
 Solve Exercise 6 here:
 */
 
-for (gym of game.gyms) {
-    if (gym.difficulty < 3) {
-        gym.completed = true;
-    } else { // we can save some computations here since we know that the gyms are sorted by increasing difficulty
-        break;
+// ok apparently this is a big chunk of the exercises
+// so now it's a function
+// ! completeGyms(n): sets game.gyms 'completed' values to true for gym difficulties strictly less than n
+function completeGyms(n) {
+    for (gym of game.gyms) {
+        if (gym.difficulty < n) {
+            gym.completed = true;
+        } else { // we can save some computations here since we know that the gyms are sorted by increasing difficulty
+            break;
+        };
     };
 };
+completeGyms(3);
+
 
 
 /*
@@ -171,6 +179,15 @@ After writing this method, call it and pass in a Pokemon object of your choice f
 Solve Exercise 10 here:
 */
 
+game.catchPokemon = function(pokemonObj) {
+    if (!game.party.includes(pokemonObj)) { // not entirely sure this is the right way
+        game.party.push(pokemonObj); // plop it at the end
+    } else { // error msg
+        console.log(`party already includes ${pokemonObj.name}`)
+    };
+};
+game.catchPokemon(pokemon[25]); // gives error
+game.catchPokemon(pokemon[26]); // adds
 
 
 /*
@@ -185,8 +202,16 @@ Also, log the `game.items` array to confirm that the pokeball quantity is being 
 
 Solve Exercise 11 here:
 */
-
-
+game.catchPokemon = function(pokemonObj) {
+    if (!game.party.includes(pokemonObj)) { // not entirely sure this is the right way
+        game.party.push(pokemonObj); // plop it at the end
+        game.items[1].quantity -= 1;
+    } else { // error msg
+        console.log(`party already includes ${pokemonObj.name}`)
+    };
+};
+game.catchPokemon(pokemon[133]); // I just chose a random number here
+console.log(game.items[1]);
 
 /*
 Exercise 12
@@ -196,7 +221,7 @@ Exercise 12
 Solve Exercise 12 here:
 */
 
-
+completeGyms(6);
 
 
 /*
@@ -222,6 +247,26 @@ For example, if five gym objects have a value of `true` on their `completed` pro
 Solve Exercise 13 here:
 */
 
+game.gymStatus = function () {
+    // initialize
+    const gymTally = {
+        completed: 0,
+        incomplete: 0,
+    };
+    // iterate
+    for (gym of game.gyms) {
+        if (gym.completed) { // true
+            gymTally.completed++;
+        } else if (!gym.completed) { // false
+            gymTally.incomplete++;
+        } else {
+            console.log("this should not be printing!"); // to catch undefineds
+        };
+    };
+    console.log(gymTally);
+};
+
+game.gymStatus();
 
 
 /*
@@ -236,6 +281,10 @@ This method should:
 Solve Exercise 14 here:
 */
 
+game.partyCount = function () {
+    return game.party.length;
+};
+console.log(`There are ${game.partyCount()} pokemon in the party!`);
 
 
 /*
@@ -246,7 +295,9 @@ Exercise 15
 Solve Exercise 15 here:
 */
 
+// the only reflection I can offer is that this is exercise at which I went back and refactored my code to make this code block a function. Hopefuly this pays off.
 
+completeGyms(8);
 
 
 /*
@@ -257,6 +308,7 @@ Exercise 16
 Solve Exercise 16 here:
 */
 
+console.log(game);
 
 
 /*
@@ -268,6 +320,20 @@ Exercise 17
 Solve Exercise 17 here:
 */
 
+function hpCompare(a, b) {
+    // assumes a and b are pokemon objects. not sure how to assert that in code.
+    // using the code template from MDN https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+    if (a.hp > b.hp) { // higher hp at the front
+        return -1;
+    } else if (a.hp < b.hp) { // lower hp at the back
+        return 1;
+    }
+    // a must be equal to b
+    return 0;
+};
+// somehow this sorts the hp in console.log calls at the top of the file. I do not understand.
+game.party.sort(hpCompare);
+console.log(game.party);
 
 /*
 Exercise 18
@@ -288,6 +354,21 @@ Also, log the `game.items` array to confirm that the pokeball quantity is being 
 Solve Exercise 18 here:
 */
 
+console.log("I think y'all mean Exercise 11 here, not 12 which was completing gyms");
+game.collection = [];
+game.catchPokemon = function(pokemonObj) {
+    if (!game.party.includes(pokemonObj) && game.party.length < 6) { // if it's unique and party has room
+        game.party.push(pokemonObj); // plop it at the end
+        game.items[1].quantity -= 1;
+    } else if (!game.party.includes(pokemonObj) && !game.collection.includes(pokemonObj)) { // if it's unique but party is full
+        game.collection.push(pokemonObj);
+        game.items[1].quantity -= 1;
+    } else { // error msg
+        console.log(`You already have ${pokemonObj.name}`)
+    };
+};
+game.catchPokemon(pokemon[12]); // I just chose a random number here
+console.log(game.items[1]);
 
 
 /*
@@ -301,6 +382,24 @@ Also, ensure that the Pokemon isn't added to the `game.party` or the `game.colle
 Solve Exercise 19 here:
 */
 
+game.collection = [];
+game.catchPokemon = function(pokemonObj) {
+    if (game.items[1].quantity > 0) {
+        if (!game.party.includes(pokemonObj) && game.party.length < 6) { // if it's unique and party has room
+            game.party.push(pokemonObj); // plop it at the end
+            game.items[1].quantity -= 1;
+        } else if (!game.party.includes(pokemonObj) && !game.collection.includes(pokemonObj)) { // if it's unique but party is full
+            game.collection.push(pokemonObj);
+            game.items[1].quantity -= 1;
+        } else { // error msg
+            console.log(`You already have ${pokemonObj.name}`);
+        };
+    } else { // no pokemon for ju
+        console.log("You're out of pokeballs!");
+    };
+};
+game.catchPokemon(pokemon[142]); // I just chose a random number here
+console.log(game.items[1]);
 
 
 /*
